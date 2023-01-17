@@ -264,7 +264,7 @@ function Read-AutoFile {
     if (Confirm-FileExists $Filename) {
         foreach ($Products in Get-Content $Filename) {
             if ($TestType -eq 'Full') {
-                Invoke-Full $Products -LogIn $LogIn -Silent $Quiet
+                Invoke-Full -Products $Products -LogIn $LogIn -Quiet $Quiet
                 $LogIn = $false
             }
             elseif ($TestType -eq 'Rego') {
@@ -317,6 +317,7 @@ function Invoke-Rego {
                         catch {
                             Set-Location $PSScriptRoot
                             Write-Error "Unknown problem running '.\Functional\RegoCachedProviderTesting.ps1', please report."
+                            Write-Output $_
                             exit
                         }
                         Set-Location $PSScriptRoot
@@ -360,14 +361,12 @@ function Invoke-Full {
         $Quiet = $True
     )
     try {
-        .\Functional\RegoCachedProviderTesting.ps1 -ProductNames $Products -OutPath $Out -LogIn $LogIn -Quiet $Quiet
+        Invoke-SCuBA -ProductNames $Products -OutPath $Out -LogIn $LogIn
     }
     catch {
-        Set-Location $PSScriptRoot
-        Write-Error "Unknown problem running '.\Functional\RegoCachedProviderTesting.ps1', please report."
+        Write-Output $_
         exit
     }
-    Set-Location $PSScriptRoot
 
 }
 
@@ -459,14 +458,12 @@ if ($Products[0] -eq '*') {
 }
 
 if ($Auto -ne '') {
-    if ($TestType -eq 'Full') {
-        Write-Output "COMING SOON: Disabled until defender bug is fixed"
-        exit
-    }
     Invoke-Auto $Auto
 }
 
 elseif ($TestType -eq 'Rego') {
+    $Out = Join-Path -Path $Out -ChildPath "Regression"
+    New-Folders $Out
     New-Folders $Save
     $Save = Get-AbsolutePath $Save
     $RegressionTests = Get-AbsolutePath $RegressionTests
@@ -479,7 +476,5 @@ elseif ($TestType -eq 'Rego') {
 }
 
 else {
-    Write-Output "COMING SOON: Disabled until defender bug is fixed"
-    exit
-    Invoke-Full -Products Products -LogIn $true -Silent $Quiet
+    Invoke-Full -Products $Products -LogIn $true -Quiet $Quiet
 }
