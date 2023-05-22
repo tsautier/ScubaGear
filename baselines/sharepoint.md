@@ -133,34 +133,34 @@ External sharing SHOULD be limited to approved domains and security groups per i
 
 - N/A
 
-### Implementation 
+### Implementation
 
 To adjust sharing settings, in the **SharePoint admin center**:
 
 1.  Select **Policies** -\> **Sharing**.
 
-2.  Adjust external sharing slider to **New and Existing Guests.**
+2.  Adjust external sharing slider to **New and Existing Guests**.
 
-3.  Expand **More external sharing settings.**
+3.  Expand **More external sharing settings**.
 
 4.  Select **Limit external sharing by domain**.
 
-5.  Select **Add domains.**
+5.  Select **Add domains**.
 
 6.  Add domains.
 
-7.  Select **Save.**
+7.  Select **Save**.
 
 8.  Select **Allow only users in specific security groups to share
     externally**.
 
-9.  Select **Manage security groups.**
+9.  Select **Manage security groups**.
 
 10. Add security groups.
 
-11. Select **Save.**
+11. Select **Save**.
 
-## 3. Sensitivity Levels 
+## 3. Sensitivity Levels
 
 SharePoint allows sharing with users who are outside the agency, which
 is convenient but may pose a data loss or other information security
@@ -184,26 +184,26 @@ Sharing settings for specific SharePoint sites SHOULD align to their sensitivity
 
 - N/A
 
-### Implementation 
+### Implementation
 
 To limit external sharing by domain, in the **SharePoint admin center**:
 
-1.  Select **Sites.**
+1.  Select **Sites**.
 
-2.  Select **Active sites.**
+2.  Select **Active sites**.
 
-3.  Select **Site name.**
+3.  Select **Site name**.
 
-4.  Select **Add domains.**
+4.  Select **Add domains**.
 
-5.  Select **Policies.**
+5.  Select **Policies**.
 
 6.  Under **external sharing**, select **Edit**.
 
 7.  Select permissions aligning to the risk posture associated with the
     sensitivity of the SharePoint site.
 
-8.  Select **Save.**
+8.  Select **Save**.
 
 ## 4. Guest Access to a Site or OneDrive
 
@@ -235,16 +235,16 @@ Expiration timers SHOULD be set to 30 days.
 - [Managing SharePoint Online Security: A Team Effort \| Microsoft
   Build](https://docs.microsoft.com/en-us/microsoft-365/community/sharepoint-security-a-team-effort)
 
-### Implementation 
+### Implementation
 
 To limit external sharing by domain, in the **SharePoint admin center**:
 
 1.  Select **Policies** -\> **Sharing**.
 
-2.  Expand **More external sharing settings.**
+2.  Expand **More external sharing settings**.
 
 3.  Select **Guest access to a site or OneDrive will expire
-    automatically after this many days.**
+    automatically after this many days**.
 
 4.  Enter “30” days.
 
@@ -279,10 +279,40 @@ In the **SharePoint Classic admin center**:
 1.  Scroll to the **Custom Script** setting and select both of the
     following:
 
-2.  **Prevent users from running custom script on personal sites.**
+2.  **Prevent users from running custom script on personal sites**.
 
 3.  **Prevent users from running custom script on self-service created
-    sites.**
+    sites**.
+
+## 6. Guest Access to Sharing Invitations
+
+Something
+
+### Policies
+#### MS.SHAREPOINT.6.1v1
+Sharing Invitations must be restricted to the guest email they were sent to.
+- _Rationale:_ TODO
+- _Last modified:_ June 2023
+
+### License Requirements
+
+- Something
+
+### Resources
+
+- Something
+
+### Implementation
+
+To limit external sharing by guest, in the **SharePoint admin center**:
+
+1.  Select **Policies** -\> **Sharing**.
+
+2.  Expand **More external sharing settings**.
+
+3. Select **Guests must sign in using the same account to which sharing invitations are sent**.
+
+4. Select **Save**.
 
 # Acknowledgements
 
