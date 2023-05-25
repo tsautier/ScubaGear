@@ -51,15 +51,17 @@ agency. To prevent users from unauthenticated sharing of content, turn
 off Anyone sharing for users outside the tenant when accessing content
 in SharePoint, Groups, or Teams.
 
-### Policy
+### Policies
 
-#### MS.OD.1.1v1
-- Anyone links SHOULD be disabled.
+#### MS.ONEDRIVE.1.1v1
+Anyone Links SHOULD be Disabled.
+- _Rationale:_ Anyone link sharing is enabled, the default when creating a link is set to Anyone. Providing a more secure default option can mitigate unintentional sharing with unauthenticated anonymous third parties. To do so, set the default sharing type to be limited to people within your organization instead.
+- _Last Modified:_ June 2023
 
 ### Resources
 
 - [Limit accidental exposure \| Microsoft
-  Docs](https://docs.microsoft.com/en-us/microsoft-365/solutions/share-limit-accidental-exposure?view=o365-worldwide)
+  Docs](https://learn.microsoft.com/en-us/microsoft-365/solutions/share-limit-accidental-exposure?view=o365-worldwide)
 
 ### License Requirements
 
@@ -77,26 +79,25 @@ To turn off Anyone links for the agency:
 2.  In the left-hand navigation pane, expand **Policies,** then select
     [**Sharing**](https://go.microsoft.com/fwlink/?linkid=2185222).
 
-3.  Set the SharePoint external sharing settings to **New and existing
-    guests**, then set OneDrive to **New and existing guests**.
+3.  Set the SharePoint external sharing settings to either **Existing guests** or **Only people in your organization**, then set OneDrive to either **Existing guests** or **Only people in your organization**.
 
 4.  Click **Save**.
 
-To turn off Anyone links for a site:
-
+To turn off Anyone links for a site: (**Default is set to organization-level settings**)
+ 
 1.  In the **SharePoint admin center** left navigation pane, expand
     **Sites,** and select [**Active
     sites**](https://go.microsoft.com/fwlink/?linkid=2185220).
 
 2.  Select the site to configure.
 
-3.  In the ribbon, select **Sharing**.
+3.  In the ribbon, under **Settings**, select **More sharing settings**.
 
-4.  Ensure that **Sharing** is set to **New and existing guests**.
+4.  Ensure that **External Sharing** is set to either **Existing guests** or **Only people in your organization**.
 
 5.  Click **Save**.
 
-## 2. Expiration Date SHOULD Be Set for Anyone Links
+## 2. Expiration Date for Anyone Links
 
 Files that are stored in SharePoint sites, Groups, and Teams for months
 and years could lead to unexpected modifications to files if shared with
@@ -105,23 +106,25 @@ can help avoid unwanted changes. If Anyone links are enabled, the
 expiration date SHOULD be set to thirty days or as determined by mission
 needs or agency policy.
 
-### Policy
+### Policies
 
-#### MS.OD.2.1v1
-- An expiration date SHOULD be set for Anyone links.
-
-- Expiration date SHOULD be set to thirty days.
+#### MS.ONEDRIVE.2.1v1
+Expiration Date SHOULD Be Set for Anyone Links for thirty days or less.
+- _Rationale:_ In the case where anyone links are enabled, set expiration date on to avoid unauthenticated sharing
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Best practices for unauthenticated sharing \| Microsoft
-  Docs](https://docs.microsoft.com/en-us/microsoft-365/solutions/best-practices-anonymous-sharing?view=o365-worldwide)
+  Docs](https://learn.microsoft.com/en-us/microsoft-365/solutions/best-practices-anonymous-sharing?view=o365-worldwide)
 
 ### License Requirements
 
 - N/A
 
 ### Implementation
+
+**Note:** Same Implementation in MS.SHAREPOINT.4.1V1
 
 To set an expiration date for Anyone links across the agency (**Note**:
 Anyone links must be enabled).
@@ -132,45 +135,35 @@ Anyone links must be enabled).
     select
     [**Sharing**](https://go.microsoft.com/fwlink/?linkid=2185222).
 
-3.  Under **Choose expiration and permissions options for Anyone
-    links**, select the **These links must expire within this many
-    days** check box.
+3.  Under **Choose expiration and permissions options for Anyonemlinks**, 
+    select the **These links must expire within this many days** 
+    check box.
 
 4.  Enter the number of days in the box, and then click **Save**.
 
-To set an expiration date for Anyone links on a specific site:
-
-1.  Open the **SharePoint admin center**, expand **Sites**, and then
-    select [**Active
-    sites**](https://go.microsoft.com/fwlink/?linkid=2185220).
-
-2.  Select the site to change, and then select **Sharing**.
-
-3.  Under **Advanced settings for Anyone links**, under **Expiration of
-    Anyone links**, clear the **Same as organization-level setting**
-    check box.
-
-4.  Select the **These links must expire within this many days** option
-    and enter a number of days in the box.
-
-5.  Click **Save**.
-
-## 3. Link Permissions SHOULD Be Set to Enabled Anyone Links to View
+## 3. Link Permissions
 
 The Anyone links default to allow people to edit files, as well as edit
 and view files and upload new files to folders. To allow unauthenticated
 sharing but keep unauthenticated people from modifying the agency's
 content, consider setting the file and folder permissions to **View**.
 
-### Policy
+### Policies
 
-#### MS.OD.3.1v1
-- Anyone link permissions SHOULD be limited to View.
+#### MS.ONEDRIVE.3.1v1
+Default Link Sharing Type SHOULD NOT Be Set to Anyone
+- _Rationale:_ Anyone link sharing is enabled, the default when creating a link is set to Anyone. Providing a more secure default option can mitigate unintentional sharing with unauthenticated anonymous third parties. To do so, set the default sharing type to be limited to people within your organization instead.
+- _Last modified:_ June 2023
+
+#### MS.ONEDRIVE.3.2v1
+Anyone Link Permissions SHOULD Be Set to View Only
+- _Rationale:_ Files and folders persmissiion should be set to View Only to avoid unwanted edit by people outside the organization
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Set link permissions \| Microsoft
-  Docs](https://docs.microsoft.com/en-us/microsoft-365/solutions/best-practices-anonymous-sharing?view=o365-worldwide#set-link-permissions)
+  Docs](https://learn.microsoft.com/en-us/microsoft-365/solutions/best-practices-anonymous-sharing?view=o365-worldwide#set-link-permissions)
 
 ### License Requirements
 
@@ -178,31 +171,45 @@ content, consider setting the file and folder permissions to **View**.
 
 ### Implementation
 
+**Note:** Same Implementation in MS.SHAREPOINT.1.1V1
+
+To set the default file and folder sharing link for the organization:
+
 1.  Open the **SharePoint admin center**.
 
 2.  In the left-hand navigation pane, expand **Policies**, then select
     **Sharing**.
 
-3.  Under **Advanced settings for Anyone links**, set the file and
-    folder permissions to **View**.
+3.  Under **File and folder links**, for **Choose the type of link that's selected by default when users share files and folders in SharePoint and OneDrive**
+    select **Only people in your organization** or **Specific people (only the people the user specifies)**.
 
-## 4. OneDrive Client SHALL Be Restricted to Windows for Agency-Defined Domain(s)
+The set Link permission to View Only
+
+1.  Open the **SharePoint admin center**.
+
+2.  In the left-hand navigation pane, expand **Policies**, then select
+    **Sharing**.
+
+3.  Under **File and folder links**, for **Choose the permission that's selected by default for sharing links**
+    select **View**.
+
+## 4. OneDrive Client
 
 Configuring OneDrive to sync only to agency-defined domains ensures that
 users can only sync to agency-managed computers.
 
-### Policy
+### Policies
 
-#### MS.OD.4.1v1
-
-- OneDrive Client for Windows SHALL be restricted to agency-Defined
-  Domain(s).
+#### MS.ONEDRIVE.4.1v1
+OneDrive Client SHALL Be Restricted to Windows for Agency-Defined Domain(s).
+- _Rationale:_ Ensure data only exists in Agency-Defined Domain(s) for Windows systems
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Allow syncing only on computers joined to specific domains – OneDrive
   \| Microsoft
-  Docs](https://docs.microsoft.com/en-us/onedrive/allow-syncing-only-on-specific-domains)
+  Docs](https://learn.microsoft.com/en-us/sharepoint/allow-syncing-only-on-specific-domains)
 
 ### License Requirements
 
@@ -214,7 +221,7 @@ users can only sync to agency-managed computers.
 
 2.  In the left-hand navigation pane, select **Settings** and sign in
     with an account that has [admin
-    permissions](https://docs.microsoft.com/en-us/sharepoint/sharepoint-admin-role)
+    permissions](https://learn.microsoft.com/en-us/sharepoint/sharepoint-admin-role)
     for the agency.
 
 3.  Select **Sync**.
@@ -223,7 +230,7 @@ users can only sync to agency-managed computers.
     domains** check box.
 
 5.  Add the [Globally Unique Identifier (GUID) of each
-    domain](https://docs.microsoft.com/en-us/powershell/module/activedirectory/get-addomain?view=windowsserver2022-ps) for
+    domain](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-addomain?view=windowsserver2022-ps) for
     the member computers that the agency wants to be able to sync.
 
 **Note:** Add the domain GUID of the computer domain membership. If
@@ -233,29 +240,29 @@ account is joined to is required.
 **Important:** This setting is only applicable to Active Directory
 domains. It does not apply to Azure Active Directory (AAD) domains. If
 agency devices are only Azure AD joined, consider using a [Conditional
-Access Policy](https://docs.microsoft.com/en-us/azure/active-directory/conditional-access/overview)
+Access Policy](https://learn.microsoft.com/en-us/azure/active-directory/conditional-access/overview)
 instead.
 
 6.  Click **Save**.
 
-## 5. OneDrive Client SHALL Be Restricted to Sync with Mac for Agency-Defined Devices
+## 5. Sync with Mac for Agency-Defined Devices
 
 Set restrictions on whether users can sync items to non-domain joined
 machines, control the list of allowed domains, and manage whether Mac
 clients (which do not support domain join) can sync.
 
-### Policy
+### Policies
 
-#### MS.OD.5.1v1
-
-- OneDrive Client Sync SHALL only be allowed only within the local
-  domain.
+#### MS.ONEDRIVE.5.1v1
+OneDrive Client SHALL Be Restricted to Sync with Mac for Agency-Defined Devices.
+- _Rationale:_ Ensure data only exists in Agency-Defined Domain(s) for Mac Devices.
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Set-SPOTenantSyncClientRestriction (SharePointOnlinePowerShell) \|
   Microsoft
-  Docs](https://docs.microsoft.com/en-us/powershell/module/sharepoint-online/set-spotenantsyncclientrestriction?view=sharepoint-ps#:~:text=In%20order%20to%20explicitly%20block%20Microsoft%20OneDrive%20client,cmdlet%20with%20the%20BlockMacSync%20parameter%20set%20to%20true.?msclkid=f80f95c5c4c611ecac7de0980370f33c)
+  Docs](https://learn.microsoft.com/en-us/powershell/module/sharepoint-online/set-spotenantsyncclientrestriction?view=sharepoint-ps)
 
 ### License Requirements
 
@@ -273,22 +280,23 @@ reflected within five minutes.
 "786548DD-877B-4760-A749-6B1EFBC1190A;
 877564FF-877B-4760-A749-6B1EFBC1190A" -BlockMacSync:$false`
 
-## 6. OneDrive Client Sync SHALL Only Be Allowed Within the Local Domain
+## 6. Local Domain Sync
 
 Configuring OneDrive to sync only to agency-defined domains ensures that
 users can only sync to agency-managed computers.
 
-### Policy
+### Policies
 
-#### MS.OD.6.1v1
-
-- OneDrive Client Sync SHALL be restricted to the local domain.
+#### MS.ONEDRIVE.6.1v1
+OneDrive Client Sync SHALL Only Be Allowed Within the Local Domain.
+- _Rationale:_ TODO
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Allow syncing only on computers joined to specific domains \|
   Microsoft
-  Documents](https://docs.microsoft.com/en-us/onedrive/allow-syncing-only-on-specific-domains)
+  Documents](https://learn.microsoft.com/en-us/sharepoint/allow-syncing-only-on-specific-domains)
 
 ### License Requirements
 
@@ -307,7 +315,7 @@ users can only sync to agency-managed computers.
     computers joined to specific domains** is checked, and that a domain
     GUID displays in the box below it.
 
-## 7. Legacy Authentication SHALL Be Blocked 
+## 7. Legacy Authentication
 
 Modern authentication, based on Active Directory Authentication Library
 (ADAL) and Open Authorization 2 (OAuth2), is a critical component of
@@ -320,16 +328,17 @@ important to make sure that only apps that support modern authentication
 are allowed to connect, assuring that only authorized devices are
 allowed to access enterprise data.
 
-### Policy
+### Policies
 
-#### MS.OD.7.1v1
-
-- Legacy Authentication SHALL be blocked.
+#### MS.ONEDRIVE.7.1v1
+Legacy Authentication SHALL Be Blocked.
+- _Rationale:_ TODO
+- _Last modified:_ June 2023
 
 ### Resources
 
 - [Control access from unmanaged devices \| Microsoft
-  Documents](https://docs.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)
+  Documents](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)
 
 ### License Requirements
 
@@ -412,4 +421,4 @@ computer.
 **Resources**
 
 [Use OneDrive policies to control sync settings - OneDrive \| Microsoft
-Docs](https://docs.microsoft.com/en-us/onedrive/use-group-policy#allow-syncing-onedrive-accounts-for-only-specific-organizations)
+Docs](https://learn.microsoft.com/en-us/sharepoint/use-group-policy#allow-syncing-onedrive-accounts-for-only-specific-organizations)
