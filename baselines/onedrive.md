@@ -41,7 +41,7 @@ document. The United States Government has adapted selections of these
 documents to develop innovative and scalable configuration standards to
 strengthen the security of widely used cloud-based software services.
 
-# 2. Baseline
+# Baseline
 
 ## 1. Anyone Links
 
@@ -127,7 +127,7 @@ Expiration Date SHOULD Be Set for Anyone Links for thirty days or less.
 **Note:** Same Implementation in MS.SHAREPOINT.4.1V1
 
 To set an expiration date for Anyone links across the agency (**Note**:
-Anyone links must be enabled).
+Only implement when 2.1 is not being implemented).
 
 1.  Open the **SharePoint admin center.**
 
@@ -135,7 +135,7 @@ Anyone links must be enabled).
     select
     [**Sharing**](https://go.microsoft.com/fwlink/?linkid=2185222).
 
-3.  Under **Choose expiration and permissions options for Anyonemlinks**, 
+3.  Under **Choose expiration and permissions options for Anyone links**, 
     select the **These links must expire within this many days** 
     check box.
 
@@ -279,83 +279,6 @@ reflected within five minutes.
 `Set-SPOTenantSyncClientRestriction -Enable -DomainGuids
 "786548DD-877B-4760-A749-6B1EFBC1190A;
 877564FF-877B-4760-A749-6B1EFBC1190A" -BlockMacSync:$false`
-
-## 6. Local Domain Sync
-
-Configuring OneDrive to sync only to agency-defined domains ensures that
-users can only sync to agency-managed computers.
-
-### Policies
-
-#### MS.ONEDRIVE.6.1v1
-OneDrive Client Sync SHALL Only Be Allowed Within the Local Domain.
-- _Rationale:_ TODO
-- _Last modified:_ June 2023
-
-### Resources
-
-- [Allow syncing only on computers joined to specific domains \|
-  Microsoft
-  Documents](https://learn.microsoft.com/en-us/sharepoint/allow-syncing-only-on-specific-domains)
-
-### License Requirements
-
-- N/A
-
-### Implementation
-
-1.  Open the **SharePoint admin center**.
-
-2.  In the left-hand navigation pane, select **Settings**.
-
-3.  Next to **OneDrive**, click **Sync** to display synchronization
-    settings.
-
-4.  On the **Sync settings** page, confirm that **Allow syncing only on
-    computers joined to specific domains** is checked, and that a domain
-    GUID displays in the box below it.
-
-## 7. Legacy Authentication
-
-Modern authentication, based on Active Directory Authentication Library
-(ADAL) and Open Authorization 2 (OAuth2), is a critical component of
-security in Office 365. It provides the device authentication and
-authorization capability of Office 365, which is a foundational security
-component. If modern authentication is not required, this creates a
-loophole that could allow unauthorized devices to connect to OneDrive
-and download/exfiltrate enterprise data. For this reason, it is
-important to make sure that only apps that support modern authentication
-are allowed to connect, assuring that only authorized devices are
-allowed to access enterprise data.
-
-### Policies
-
-#### MS.ONEDRIVE.7.1v1
-Legacy Authentication SHALL Be Blocked.
-- _Rationale:_ TODO
-- _Last modified:_ June 2023
-
-### Resources
-
-- [Control access from unmanaged devices \| Microsoft
-  Documents](https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices)
-
-### License Requirements
-
-- N/A
-
-### Implementation
-
-1.  Open the **SharePoint admin center**.
-
-2. In the left-hand navigation pane, click **Policies** \> **Access
-    Control** \> **Device access**.
-
-3. Click **Apps that don’t use modern authentication** to display the
-    device access settings.
-
-4. On the **Apps that don’t use modern authentication** page, select
-    the **Block access** option.
 
 # Acknowledgements
 
