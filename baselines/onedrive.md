@@ -43,7 +43,7 @@ strengthen the security of widely used cloud-based software services.
 
 # Baseline
 
-## 1. Anyone Links
+## 1. External Sharing
 
 Unauthenticated sharing (Anyone links) is used to share data without
 authentication and users are free to pass it on to others outside the
@@ -54,9 +54,10 @@ in SharePoint, Groups, or Teams.
 ### Policies
 
 #### MS.ONEDRIVE.1.1v1
-Anyone Links SHOULD be Disabled.
-- _Rationale:_ Anyone link sharing is enabled, the default when creating a link is set to Anyone. Providing a more secure default option can mitigate unintentional sharing with unauthenticated anonymous third parties. To do so, set the default sharing type to be limited to people within your organization instead.
+External sharing SHOULD be limited to Existing Guests or a more restrictive setting.
+- _Rationale:_ You can restrict the extent of sharing at an organizational level. This will set the maximum sharing allowed. Existing guests allow sharing only with guests who are already in your directory. While Only people in your organization disable anyone links completely.
 - _Last Modified:_ June 2023
+- _Note:_ Same Implementation in MS.SHAREPOINT.1.1V1
 
 ### Resources
 
@@ -124,10 +125,8 @@ Expiration Date SHOULD Be Set for Anyone Links for thirty days or less.
 
 ### Implementation
 
-**Note:** Same Implementation in MS.SHAREPOINT.4.1V1
-
 To set an expiration date for Anyone links across the agency (**Note**:
-Only implement when 2.1 is not being implemented).
+Only implement when 2.1 is not being implemented and set to Anyone).
 
 1.  Open the **SharePoint admin center.**
 
@@ -154,6 +153,7 @@ content, consider setting the file and folder permissions to **View**.
 Default Link Sharing Type SHOULD NOT Be Set to Anyone
 - _Rationale:_ Anyone link sharing is enabled, the default when creating a link is set to Anyone. Providing a more secure default option can mitigate unintentional sharing with unauthenticated anonymous third parties. To do so, set the default sharing type to be limited to people within your organization instead.
 - _Last modified:_ June 2023
+**Note:** Simarliar Implementation in MS.SHAREPOINT.2.1V1
 
 #### MS.ONEDRIVE.3.2v1
 Anyone Link Permissions SHOULD Be Set to View Only
@@ -170,8 +170,6 @@ Anyone Link Permissions SHOULD Be Set to View Only
 - N/A
 
 ### Implementation
-
-**Note:** Same Implementation in MS.SHAREPOINT.1.1V1
 
 To set the default file and folder sharing link for the organization:
 
