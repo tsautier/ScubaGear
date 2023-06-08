@@ -55,7 +55,7 @@ in SharePoint, Groups, or Teams.
 
 #### MS.ONEDRIVE.1.1v1
 External sharing SHOULD be limited to Existing Guests or a more restrictive setting.
-- _Rationale:_ You can restrict the extent of sharing at an organizational level. This will set the maximum sharing allowed. Existing guests allow sharing only with guests who are already in your directory. While Only people in your organization disable anyone links completely.
+- _Rationale:_ TODO
 - _Last Modified:_ June 2023
 - _Note:_ Same Implementation in MS.SHAREPOINT.1.1V1
 
@@ -111,7 +111,7 @@ needs or agency policy.
 
 #### MS.ONEDRIVE.2.1v1
 Expiration Date SHOULD Be Set for Anyone Links for thirty days or less.
-- _Rationale:_ In the case where anyone links are enabled, set expiration date on to avoid unauthenticated sharing
+- _Rationale:_ TODO
 - _Last modified:_ June 2023
 
 ### Resources
@@ -151,13 +151,13 @@ content, consider setting the file and folder permissions to **View**.
 
 #### MS.ONEDRIVE.3.1v1
 Default Link Sharing Type SHOULD NOT Be Set to Anyone
-- _Rationale:_ Anyone link sharing is enabled, the default when creating a link is set to Anyone. Providing a more secure default option can mitigate unintentional sharing with unauthenticated anonymous third parties. To do so, set the default sharing type to be limited to people within your organization instead.
+- _Rationale:_ TODO
 - _Last modified:_ June 2023
-**Note:** Simarliar Implementation in MS.SHAREPOINT.2.1V1
+_Note:_ Simarliar Implementation in MS.SHAREPOINT.2.1V1
 
 #### MS.ONEDRIVE.3.2v1
 Anyone Link Permissions SHOULD Be Set to View Only
-- _Rationale:_ Files and folders persmissiion should be set to View Only to avoid unwanted edit by people outside the organization
+- _Rationale:_ TODO
 - _Last modified:_ June 2023
 
 ### Resources
@@ -190,71 +190,6 @@ The set Link permission to View Only
 
 3.  Under **File and folder links**, for **Choose the permission that's selected by default for sharing links**
     select **View**.
-
-## 4. OneDrive Client
-
-Configuring OneDrive to sync only to agency-defined domains ensures that
-users can only sync to agency-managed computers.
-
-### Policies
-
-#### MS.ONEDRIVE.4.1v1
-OneDrive Client SHALL Be Restricted to Windows for Agency-Defined Domain(s).
-- _Rationale:_ Ensure data only exists in Agency-Defined Domain(s) for Windows systems
-- _Last modified:_ June 2023
-
-### Resources
-
-- [Allow syncing only on computers joined to specific domains – OneDrive
-  \| Microsoft
-  Docs](https://learn.microsoft.com/en-us/sharepoint/allow-syncing-only-on-specific-domains)
-
-### License Requirements
-
-- N/A
-
-### Implementation
-
-1.  Open the **SharePoint admin center.**
-
-2.  In the left-hand navigation pane, select **Settings** and sign in
-    with an account that has [admin
-    permissions](https://learn.microsoft.com/en-us/sharepoint/sharepoint-admin-role)
-    for the agency.
-
-3.  Select **Sync**.
-
-4.  Select the **Allow syncing only on computers joined to specific
-    domains** check box.
-
-5.  Add the [Globally Unique Identifier (GUID) of each
-    domain](https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-addomain?view=windowsserver2022-ps) for
-    the member computers that the agency wants to be able to sync.
-
-**Note:** Add the domain GUID of the computer domain membership. If
-users are in a separate domain, only the domain GUID that the computer
-account is joined to is required.
-
-**Important:** This setting is only applicable to Active Directory
-domains. It does not apply to Azure Active Directory (AAD) domains. If
-agency devices are only Azure AD joined, consider using a [Conditional
-Access Policy](https://learn.microsoft.com/en-us/azure/active-directory/conditional-access/overview)
-instead.
-
-6.  Click **Save**.
-
-## 5. Sync with Mac for Agency-Defined Devices
-
-Set restrictions on whether users can sync items to non-domain joined
-machines, control the list of allowed domains, and manage whether Mac
-clients (which do not support domain join) can sync.
-
-### Policies
-
-#### MS.ONEDRIVE.5.1v1
-OneDrive Client SHALL Be Restricted to Sync with Mac for Agency-Defined Devices.
-- _Rationale:_ Ensure data only exists in Agency-Defined Domain(s) for Mac Devices.
-- _Last modified:_ June 2023
 
 ### Resources
 
