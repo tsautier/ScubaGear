@@ -201,39 +201,29 @@ tests[{
 #
 # MS.TEAMS.5.1v1
 #--
-# There are two relevant settings:
-#	- AllowTeamsConsumer: Is contact to or from unmanaged users allowed at all?
-#	- AllowTeamsConsumerInbound: Are unamanged users able to initiate contact?
-# If AllowTeamsConsumer is false, unmanaged users will be unable to initiate
-# contact regardless of what AllowTeamsConsumerInbound is set to as contact
-# is completely disabled. However, unfortunately setting AllowTeamsConsumer
-# to false doesn't automatically set AllowTeamsConsumerInbound to false as
-# well, and in the GUI the checkbox for AllowTeamsConsumerInbound completely
-# disappears when AllowTeamsConsumer is set to false, basically preserving
-# on the backend whatever value was there to begin with.
-#
-# TLDR: This requirement can be met if:
-#	- AllowTeamsConsumer is false regardless of the value for AllowTeamsConsumerInbound OR
-#	- AllowTeamsConsumerInbound is false
-# Basically, both cannot be true.
+# Block all 	- requiremnet met  		
+# 		DefaultCatalogAppsType - "AllowedAppList" && DefaultCatalogApps is empty
+# Allow specifc - requirement met
+# 		DefaultCatalogAppsType - "AllowedAppList" && DefaultCatalogApps is not empty
+# Allow all     - requiremnet not met 
+# 		DefaultCatalogAppsType - "BlockedAppList" && DefaultCatalogApps is empty
+# Block specifc - requiremnet not met 
+# 		DefaultCatalogAppsType - "BlockedAppList" && DefaultCatalogApps not empty
 
-FederationConfiguration[Policy.Identity] {
-    Policy := input.federation_configuration[_]
-    # Filter: only include policies that meet all the requirements
-	Policy.AllowTeamsConsumerInbound == true
-    Policy.AllowTeamsConsumer == true
+InstallationMicrosoftApps[Policy.Identity] {
+    Policy := input.app_policies[_]
+	Policy.DefaultCatalogAppsType == "BlockedAppList"
 }
 
 tests[{
 	"PolicyId" : "MS.TEAMS.5.1v1",
-	"Criticality" : "Shall",
-	"Commandlet" : ["Get-CsTenantFederationConfiguration"],
+	"Criticality" : "Should",
+	"Commandlet" : ["Get-CsTeamsAppPermissionPolicy"],
 	"ActualValue" : Policies,
-	"ReportDetails" : ReportDetailsArray(Status, Policies, String),
+	"ReportDetails" : ReportDetailsBoolean(Status),
 	"RequirementMet" : Status
 }] {
-	Policies := FederationConfiguration
-    String := "Configuration allowed unmanaged users to initiate contact with internal user across domains:"
+    Policies := InstallationMicrosoftApps
 	Status := count(Policies) == 0
 }
 #--
