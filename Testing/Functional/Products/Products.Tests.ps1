@@ -243,7 +243,7 @@ Describe "Policy Checks for <ProductName>"{
                 }
 
                 if ($IsCustomImplementation){
-                    $Details | Should -Match 'Custom implementation allowed.'
+                    $Details | Should -Match 'A custom product can be used to fulfill this policy requirement.'
                 }
 
                 # Check final HTML output
@@ -308,7 +308,7 @@ Describe "Policy Checks for <ProductName>"{
 
                                     if ($IsCustomImplementation){
                                         $RowData[2].text | Should -BeLikeExactly "N/A" -Because "custom policies should not have results. [$Msg]"
-                                        $RowData[4].text | Should -Match 'Custom implementation allowed.'
+                                        $RowData[4].text | Should -Match 'A custom product can be used to fulfill this policy requirement.'
                                     }
                                     elseif ($IsNotChecked){
                                         $RowData[2].text | Should -BeLikeExactly "N/A" -Because "custom policies should not have results. [$Msg]"
