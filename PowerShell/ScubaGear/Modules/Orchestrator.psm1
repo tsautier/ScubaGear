@@ -295,7 +295,7 @@ function Invoke-SCuBA {
             foreach ( $value in $PSBoundParameters.keys ) {
                 if ( $value -ne "ConfigFilePath" )
                 {
-                    $ScubaConfig[$value] = $PSBoundParameters[$value] 
+                    $ScubaConfig[$value] = $PSBoundParameters[$value]
                 }
             }
         }
