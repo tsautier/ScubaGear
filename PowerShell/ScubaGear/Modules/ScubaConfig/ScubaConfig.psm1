@@ -62,7 +62,7 @@ class ScubaConfig {
         }
 
         if (-Not $this.Configuration.OutRegoFileName){
-            $this.Configuration.OutFolderName = "TestResults"
+            $this.Configuration.OutRegoFileName = "TestResults"
         }
 
         if (-Not $this.Configuration.OutReportName){
