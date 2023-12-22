@@ -38,7 +38,7 @@ class ScubaConfig {
         }
 
         if (-Not $this.Configuration.OPAPath){
-            $this.Configuration.OPAPath = (Join-Path -Path $PSScriptRoot -ChildPath "..\..\..")
+            $this.Configuration.OPAPath = (Join-Path -Path $PSScriptRoot -ChildPath "..\..\..\..")
         }
 
         if (-Not $this.Configuration.LogIn){
