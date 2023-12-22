@@ -283,14 +283,18 @@ function Invoke-SCuBA {
             }
 
             # New the bound parameters contain the following
-            # 1) Parameters explicitly passed in ( which may include authentication ones )
-            # 2) Authentication parameters from the config file
-            # Use these to set the final config values, which will be used in
-            # processing
-            $ScubaConfigClone = $ScubaConfig.Clone()
-            # If a config value has been explictly set as a parameter override it
-            foreach ( $value in $ScubaConfigClone.keys ) {
-                if ( $PSBoundParameters[$value] -and $ScubaConfigClone[$value] ) {
+            # 1) Non Authentication Parameters explicitly passed in
+            # 2) Authentication parameters ( passed in or from the config file as per code above )
+            #
+            # So to provide for a command line override of config values just set the correspoding
+            # config value from the bound parametersrs to override.  Thsi is redundant copy for
+            # the authentication parameters ( but keeps the logic simpler)
+            # We do not allow ConfigFilePath to be copied as it will be propegated to the
+            # config module by reference and causes issues
+            #
+            foreach ( $value in $PSBoundParameters.keys ) {
+                if ( $value -ne "ConfigFilePath" )
+                {
                     $ScubaConfig[$value] = $PSBoundParameters[$value] 
                 }
             }
