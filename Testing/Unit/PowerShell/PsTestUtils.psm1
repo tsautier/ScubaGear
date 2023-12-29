@@ -1,20 +1,12 @@
-# $hash1 = @{
-#     "color" = "blue"
-#     "city" = "boston"
-#     "team" = "redsox"
-# }
+# Powershell module to compare 2 hashtables
+# This checks to see if all the keys match
+# (no missing keys from either one)
+# It will then compare the values to see if these match
+#
+# Returns $true if above conditions are met otherwise $false
+#
+#  NOTES:  Value compare is not deep compare
 
-# $hash2 = $hash1.clone()
-
-# $hash3 = $hash1.clone()
-
-# $hash2.color = "red"
-
-# $hash1keys=$hash1.keys
-
-# foreach ($h in $hash1keys ) {
-#     Write-Host "${h}: $($hash1.$h)"
-# }
 function Compare-Hashes{
     param (
         [hashtable] $hash1,
