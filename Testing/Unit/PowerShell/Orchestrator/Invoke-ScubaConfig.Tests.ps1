@@ -39,27 +39,31 @@ InModuleScope Orchestrator {
             }
             It 'Verify override:  Compare-Hash should fail' {
                 {Invoke-Scuba @SplatParams} | Should -Not -Throw
+                # Save ( clone ) the modified configuratiobn ( Invoke-Scuba updatas this )
                 $ScubaConfTest = [ScubaConfig]::GetInstance().Configuration.Clone()
 
+                # Now reload the original from the config file 
                 [ScubaConfig]::GetInstance().LoadConfig($ConfigFile)
                 $ScubaConfRef = [ScubaConfig]::GetInstance().Configuration
 
-                $difference_test_pass = ( -Not ( Compare-Hashes $ScubaConfRef $ScubaConfTest ))
-                $difference_test_pass
+                # A difference should be detected here.
+                $CompareResult = Compare-Hashes $ScubaConfRef $ScubaConfTest | Select-Object -Last 1
+                $CompareResult | Should -be $false
 
             }
             It 'Verify modified config matches expected value: Compare-Hash should pass ' {
                 {Invoke-Scuba @SplatParams} | Should -Not -Throw
+                #   Again save (clone)the modifield configuuration 
                 $ScubaConfTest = [ScubaConfig]::GetInstance().Configuration.Clone()
 
                 [ScubaConfig]::GetInstance().LoadConfig($ConfigFile)
                 $ScubaConfRef = [ScubaConfig]::GetInstance().Configuration
 
                 # Modifiy the expected value to reflect override
-                $ScubaConfRef.M365Enviroment = 'gcc'
+                $ScubaConfRef.M365Environment = 'gcc'
 
-                $other_properties_pass = ( Compare-Hashes $ScubaConfRef $ScubaConfTest )
-                $other_properties_pass
+                $CompareResult = Compare-Hashes $ScubaConfRef1 $ScubaConfTest1 | Select-Object -Last 1
+                $CompareResult | Should -be $true
 
             }
         }
