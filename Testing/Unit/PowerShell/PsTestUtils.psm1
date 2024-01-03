@@ -13,44 +13,25 @@ function Compare-Hashes{
         [hashtable] $hash2
     )
 
-    # These members are arrays and this code does not support embedded arrays
-    # So for now I need to exclude this from the comparison
-    $excludedKeys = @( 'AnObject','ProductNames')
     $compare = $true
-
-    $arr1 = @()
-    $arr2 = @()
-
-    foreach ($key in $hash1.keys){
-        if (-Not ( $key -in $excludedKeys )){
-            $arr1 += $key
-        }
-    }
-    foreach ($key in $hash2.keys){
-        if (-Not ( $key -in $excludedKeys )){
-            $arr2 += $key
-        }
-    }
-
-    foreach ($key in $arr1) {
+    foreach ($key in $hash1.keys) {
         if ( -Not ( $hash2.ContainsKey($key ))) {
             Write-Host("1st hash key {0} not in 2nd hash" -f $key )
             $compare = $false
         }
     }
-    foreach ($key in $arr2) { 
+    foreach ($key in $hash2.keys) { 
         if ( -Not ( $hash1.ContainsKey($key ))) {
             Write-Host("2nd hash key {0} not in 1st hash" -f $key )
             $compare = $false
         }
     }
     if ($compare) {
-        foreach ($key in $arr1 )
+        foreach ($key in $hash1.keys )
         {
-            $hash1_key = $hash1[$key]
-            $hash2_key = $hash2[$key]
-            if ( -Not ( $hash1_key -eq $hash2_key )) {
-                Write-Host("key {0} values differ {1} and {2}" -f $key, $hash1_key, $hash2_key )
+            # Compare object is true ( non null if miscompare )
+            if ( Compare-Object $hash1.$key $hash2.$key ) {
+                Write-Host("key {0} values differ {1} and {2}" -f $key, $hash1.$key, $hash2.$key )
                 $compare = $false
             }
         }

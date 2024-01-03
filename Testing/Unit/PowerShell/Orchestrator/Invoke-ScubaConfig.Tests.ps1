@@ -32,39 +32,65 @@ InModuleScope Orchestrator {
             BeforeAll {
                 [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseDeclaredVarsMoreThanAssignments', 'SplatParams')]
                 $ConfigFile = ( Join-Path -Path $PSScriptRoot  -ChildPath "orchestrator_config_test.yaml" )
-                $SplatParams = @{
+                $SplatParamsRef = @{
                     ConfigFilePath = $ConfigFile
-                    M365Environment = 'gcc'
+#                    M365Environment = 'gcc'
                 }
-            }
-            It 'Verify override:  Compare-Hash should fail' {
-                {Invoke-Scuba @SplatParams} | Should -Not -Throw
-                # Save ( clone ) the modified configuratiobn ( Invoke-Scuba updatas this )
-                $ScubaConfTest = [ScubaConfig]::GetInstance().Configuration.Clone()
-
-                # Now reload the original from the config file 
                 [ScubaConfig]::GetInstance().LoadConfig($ConfigFile)
-                $ScubaConfRef = [ScubaConfig]::GetInstance().Configuration
+                $ScubaConfRef= [ScubaConfig]::GetInstance().Configuration.Clone()
 
-                # A difference should be detected here.
-                $CompareResult = Compare-Hashes $ScubaConfRef $ScubaConfTest | Select-Object -Last 1
-                $CompareResult | Should -be $false
+                function Override-Test( $ModKey, $ModValue) {
+                    $SplatParams = $SplatParamsRef.Clone()
+                    $SplatParams[$ModKey] = $ModValue
+                    Invoke-Scuba @SplatParams
+                    $ConfTest = [ScubaConfig]::GetInstance().Configuration
+                    # Verify there is a difference with the override
+                    $retTestForFalse = Compare-Hashes $ScubaConfRef $ConfTest | Select-Object -Last 1
+                    # Verify there are no other differences
+                    $ConfTest[$Modkey] = $ScubaConfRef[$Modkey]
+                    $retTestForTrue = Compare-Hashes $ScubaConfRef $ConfTest |  Select-Object -Last 1
+                    return ( -Not ( $retTestForFalse ) -and ( $retTestForTrue ))
+                }
 
             }
-            It 'Verify modified config matches expected value: Compare-Hash should pass ' {
-                {Invoke-Scuba @SplatParams} | Should -Not -Throw
-                #   Again save (clone)the modifield configuuration 
-                $ScubaConfTest = [ScubaConfig]::GetInstance().Configuration.Clone()
-
-                [ScubaConfig]::GetInstance().LoadConfig($ConfigFile)
-                $ScubaConfRef = [ScubaConfig]::GetInstance().Configuration
-
-                # Modifiy the expected value to reflect override
-                $ScubaConfRef.M365Environment = 'gcc'
-
-                $CompareResult = Compare-Hashes $ScubaConfRef1 $ScubaConfTest1 | Select-Object -Last 1
-                $CompareResult | Should -be $true
-
+            It 'Verify override:  M365Environment -> gcc' {
+                Override-Test  'M365Environment' 'gcc' | Should -be $true
+            }
+            It 'Verify override:  ProductNames -> teams' {
+                Override-Test  'ProductNames' 'teams' | Should -be $true
+            }
+            It 'Verify override:  OPAPath -> ..' {
+                Override-Test  'OPAPath' '..' | Should -be $true
+            }
+            It 'Verify override: Login -> $false' {
+                Override-Test  'Login' $false | Should -be $true
+            }
+            It 'Verify override:  DisconnectOnExit -> $true -> ..' {
+                Override-Test  'DisconnectOnExit' $true | Should -be $true
+            }
+            It 'Verify override:  OutPath -> ..' {
+                Override-Test  'OutPath' '..' | Should -be $true
+            }
+            It 'Verify override:  OutFolderName -> M365BaselineConformance_mod' {
+                Override-Test  'OutFolderName' 'M365BaselineConformance_mod' | Should -be $true
+            }
+            It 'Verify override:  OutProviderFileName -> ProviderSettingsExport_mod' {
+                Override-Test  'OutProviderFileName' 'ProviderSettingsExport_mod' | Should -be $true
+            }
+            It 'Verify override:  OutRegoFileName -> TestResults_mod' {
+                Override-Test  'OutRegoFileName' 'TestResults_mod' | Should -be $true
+            }
+            It 'Verify override:  OutReportName -> BaselineReports_mod' {
+                Override-Test  'OutReportName' 'BaselineReports_mod' | Should -be $true
+            }
+            It 'Verify override:  Organization -> mod.sub.domain.com' {
+                Override-Test  'Organization' 'mod.sub.domain.com'  | Should -be $true
+            }
+            It 'Verify override:  AppID ->  0123456789abcdef' {
+                Override-Test  'AppID' ' 0123456789abcdef'  | Should -be $true
+            }
+            It 'Verify override:  CertificateThumbprint ->  FEDCBA9786543210' {
+                Override-Test  'CertificateThumbprint' 'FEDCBA9786543210'  | Should -be $true
             }
         }
     }
