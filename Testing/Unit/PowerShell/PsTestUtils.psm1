@@ -7,35 +7,32 @@
 #
 #  NOTES:  Value compare is not deep compare
 
-function Compare-Hashes{
+function Compare-Hash{
     param (
         [hashtable] $hash1,
         [hashtable] $hash2
     )
-
-    $compare = $true
-    foreach ($key in $hash1.keys) {
-        if ( -Not ( $hash2.ContainsKey($key ))) {
-            Write-Host("1st hash key {0} not in 2nd hash" -f $key )
-            $compare = $false
-        }
-    }
-    foreach ($key in $hash2.keys) { 
-        if ( -Not ( $hash1.ContainsKey($key ))) {
-            Write-Host("2nd hash key {0} not in 1st hash" -f $key )
-            $compare = $false
-        }
-    }
-    if ($compare) {
+    # Hashes are different if keys do not match
+    $keyDifference = (Compare-Object @($hash1.keys) @($hash2.keys))
+    # For unit test, inidicate key differences if present
+    $hash1_only = $keyDifference |  Where-Object SideIndicator -eq "<=" | Select-Object -ExpandPropert InputObject
+    $hash2_only = $keyDifference |  Where-Object SideIndicator -eq "=>" | Select-Object -ExpandPropert InputObject
+    if ($hash1_only) { Write-Output("hash2 missing key: " + $hash1_only) }
+    if ($hash2_only) { Write-Output("hash1 missing key: " + $hash2_only) }
+    # keys are equal, now compare comtents
+    $valueDifference = $false
+    if ( -Not $keyDifference )
+    {
         foreach ($key in $hash1.keys )
         {
-            # Compare object is true ( non null if miscompare )
-            if ( Compare-Object $hash1.$key $hash2.$key ) {
-                Write-Host("key {0} values differ {1} and {2}" -f $key, $hash1.$key, $hash2.$key )
-                $compare = $false
+            if (Compare-Object $hash1.$key $hash2.$key ){
+                $valueDifference = $true
+                Write-Output("key {0} values differ {1} and {2}" -f $key, $hash1.$key, $hash2.$key )
             }
         }
     }
-    return $compare
+    $difference = ( ($keyDifference -ne $none ) -or ($valueDifference) )
+    $isSame = ( -Not ( $difference ))
+    return $isSame
 }
 
