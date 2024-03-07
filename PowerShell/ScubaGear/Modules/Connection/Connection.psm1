@@ -62,7 +62,8 @@ function Connect-Tenant {
                        'RoleManagement.Read.Directory',
                        'GroupMember.Read.All',
                        'Directory.Read.All',
-                       'PrivilegedEligibilitySchedule.Read.AzureADGroup'
+                       'PrivilegedEligibilitySchedule.Read.AzureADGroup',
+                       'RoleManagementPolicy.Read.AzureADGroup'
                    )
                    $GraphParams = @{
                        'ErrorAction' = 'Stop';
