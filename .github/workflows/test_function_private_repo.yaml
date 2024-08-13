@@ -19,6 +19,9 @@ on:
 
 permissions: read-all
 
+env:
+  GalleryName: PrivateScubaGearGallery
+  
 jobs:
   # Build a matrix of aliases for testing.
   build-matrix:
