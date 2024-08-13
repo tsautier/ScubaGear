@@ -94,8 +94,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
-        with:
-          path: repo
+        # with:
+        #   path: repo
       - name: Create PFX
         run: |
           New-Item -ItemType file -Path ./key.txt
@@ -120,6 +120,7 @@ jobs:
           PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
       - name: Install Selenium
         run: |
+          # Import-Module -Name .\repo\utils\workflow\Install-SeleniumForTesting
           Import-Module -Name .\repo\utils\workflow\Install-SeleniumForTesting
           Install-SeleniumForTesting
       - name: Install Azure Signing Tool
@@ -144,20 +145,24 @@ jobs:
       - name: Create Private Gallery
         run: |
           # Source the deploy utilities so the functions in it can be called.
-          . repo/utils/workflow/Publish-ScubaGear.ps1
-          cd repo
+          # . repo/utils/workflow/Publish-ScubaGear.ps1
+          . utils/workflow/Publish-ScubaGear.ps1
+          # cd repo
           New-PrivateGallery -GalleryName $env:GalleryName -Trusted
       - name: Sign and Publish Module
         run: |
             # Source the deploy utilities so the functions in it can be called.
-            . repo/utils/workflow/Publish-ScubaGear.ps1
+            # . repo/utils/workflow/Publish-ScubaGear.ps1
+            . utils/workflow/Publish-ScubaGear.ps1
             # Remove non-release files
-            Remove-Item -Recurse -Force repo -Include .git*
+            # Remove-Item -Recurse -Force repo -Include .git*
+            Remove-Item -Recurse -Force . -Include .git*
             # Setup the parameters
             $Parameters = @{
               AzureKeyVaultUrl = '${{ steps.key-vault-info.outputs.KeyVaultUrl }}'
               CertificateName = '${{ steps.key-vault-info.outputs.KeyVaultCertificateName }}'
-              ModuleSourcePath = 'repo/PowerShell/ScubaGear'
+              # ModuleSourcePath = 'repo/PowerShell/ScubaGear'
+              ModuleSourcePath = './PowerShell/ScubaGear'
               GalleryName = $env:GalleryName
             }
             # This publishes to a private gallery.
@@ -166,7 +171,8 @@ jobs:
         run: |
           Get-Location
           $TestContainers = @()
-          $TestContainers += New-PesterContainer -Path "repo/Testing/Functional/BuildTest" -Data @{ }
+          # $TestContainers += New-PesterContainer -Path "repo/Testing/Functional/BuildTest" -Data @{ }
+          $TestContainers += New-PesterContainer -Path "./Testing/Functional/BuildTest" -Data @{ }
           $PesterConfig = @{
             Run = @{
               Container = $TestContainers
@@ -256,7 +262,7 @@ jobs:
               }
               $paramsAsHashTable.Add($m365KeyAndValue[0], $m365KeyAndValue[1])
               # Test the product
-              ./repo/Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
+              ./Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
             }
           }
         env:
