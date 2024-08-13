@@ -117,7 +117,7 @@ jobs:
           PfxPassword: ${{ secrets.NIGHTLY_TEST_BUILD_PW }}
       - name: Install Selenium
         run: |
-          Import-Module -Name .\utils\workflow\Install-SeleniumForTesting
+          Import-Module -Name repo/utils/workflow/Install-SeleniumForTesting
           Install-SeleniumForTesting
       - name: Install Azure Signing Tool
         run: |
