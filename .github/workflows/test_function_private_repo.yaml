@@ -190,6 +190,7 @@ jobs:
       - name: Print Scuba Version
         run: |
           Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
+          Initialize-Scuba
           Invoke-SCuBA -Version
       - name: Test Product
         id: test-product
