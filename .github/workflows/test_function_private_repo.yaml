@@ -155,8 +155,12 @@ jobs:
             # . repo/utils/workflow/Publish-ScubaGear.ps1
             . utils/workflow/Publish-ScubaGear.ps1
             # Remove non-release files
+            Write-Host "pwd: "
+            pwd
+            Write-Host "PSScriptRoot: "
+            Write-Host $PSScriptRoot            
             # Remove-Item -Recurse -Force repo -Include .git*
-            Remove-Item -Recurse -Force . -Include .git*
+            Remove-Item -Recurse -Force $PSScriptRoot -Include .git*
             # Setup the parameters
             $Parameters = @{
               AzureKeyVaultUrl = '${{ steps.key-vault-info.outputs.KeyVaultUrl }}'
