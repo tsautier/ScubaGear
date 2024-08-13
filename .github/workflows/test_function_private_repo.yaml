@@ -21,7 +21,7 @@ permissions: read-all
 
 env:
   GalleryName: PrivateScubaGearGallery
-  
+
 jobs:
   # Build a matrix of aliases for testing.
   build-matrix:
@@ -256,7 +256,7 @@ jobs:
               }
               $paramsAsHashTable.Add($m365KeyAndValue[0], $m365KeyAndValue[1])
               # Test the product
-              ./Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
+              repo/Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
             }
           }
         env:
