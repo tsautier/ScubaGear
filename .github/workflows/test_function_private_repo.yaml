@@ -169,7 +169,6 @@ jobs:
             Publish-ScubaGearModule @Parameters
       - name: Test Module Publish
         run: |
-          Get-Location
           $TestContainers = @()
           $TestContainers += New-PesterContainer -Path "repo/Testing/Functional/BuildTest" -Data @{ }
           # $TestContainers += New-PesterContainer -Path "./Testing/Functional/BuildTest" -Data @{ }
@@ -187,7 +186,9 @@ jobs:
         run: |
           Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
           # Initialize-Scuba
-          Import-Module -Name .\utils\workflow\Initialize-ScubaGearForTesting
+          Get-Location
+          pwd
+          Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
           Initialize-ScubaGearForTesting
           Invoke-SCuBA -Version
       - name: Test Product
