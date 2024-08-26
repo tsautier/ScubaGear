@@ -186,8 +186,9 @@ jobs:
         run: |
           Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
           # Initialize-Scuba
+          cd repo
           Get-Location
-          dir
+          ls
           # Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
           # Initialize-ScubaGearForTesting
           # Invoke-SCuBA -Version
