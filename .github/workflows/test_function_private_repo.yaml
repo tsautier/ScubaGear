@@ -193,6 +193,7 @@ jobs:
       - name: Test Product
         id: test-product
         run: |
+          cd repo
           # Read thumbprint from previous step.
           $thumbprint = "${{ steps.get-thumbprint.outputs.thumbprint }}"
           echo "Product alias is: ${{ matrix.product }}"
