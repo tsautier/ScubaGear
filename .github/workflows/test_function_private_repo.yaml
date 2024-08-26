@@ -109,6 +109,8 @@ jobs:
     defaults:
       run:
         shell: powershell
+    needs:
+      - publish
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
