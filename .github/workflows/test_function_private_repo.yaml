@@ -103,7 +103,10 @@ jobs:
           Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
           Initialize-ScubaGearForTesting
           Invoke-SCuBA -Version
+          Write-Host "ScubaGear"
           Write-Host (Get-Module -ListAvailable ScubaGear).path
+          Write-Host "Teams"
+          Write-Host (Get-Module -ListAvailable MicrosoftTeams).path
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
