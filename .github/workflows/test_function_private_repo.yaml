@@ -266,7 +266,7 @@ jobs:
               }
               $paramsAsHashTable.Add($m365KeyAndValue[0], $m365KeyAndValue[1])
               # Test the product
-              ./repo/Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
+              ./Testing/Functional/Products/Tests/CallProductTests.ps1 -params $paramsAsHashTable -thumbprint $thumbprint
             }
           }
         env:
