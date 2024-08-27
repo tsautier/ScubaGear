@@ -118,6 +118,12 @@ jobs:
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
           key: "powershell-directory-${{ github.run_id }}"
+      - name: Cache OPA
+        id: opa-directory
+        uses: actions/cache/save@v4
+        with:
+          path: C:\Users\runneradmin\.scubagear\Tools
+          key: "opa-directory-${{ github.run_id }}"
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
@@ -284,6 +290,11 @@ jobs:
           path: C:\Program Files\WindowsPowerShell\Modules
           key: scubagear-directory-
       - name: Restore Dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: C:\Users\runneradmin\.scubagear\Tools
+          key: opa-directory-
+      - name: Restore OPA
         uses: actions/cache/restore@v4
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
