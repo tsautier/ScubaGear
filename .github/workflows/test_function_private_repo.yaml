@@ -107,6 +107,14 @@ jobs:
           Write-Host (Get-Module -ListAvailable ScubaGear).path
           Write-Host "Teams"
           Write-Host (Get-Module -ListAvailable MicrosoftTeams).path
+      - name: Cache PowerShell modules directories
+        id: powershell-modules-directories
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            C:\Program Files\WindowsPowerShell\Modules
+            C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
+          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
