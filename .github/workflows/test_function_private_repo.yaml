@@ -103,18 +103,18 @@ jobs:
           Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
           Initialize-ScubaGearForTesting
           Invoke-SCuBA -Version
-          Write-Host "ScubaGear"
-          Write-Host (Get-Module -ListAvailable ScubaGear).path
-          Write-Host "Teams"
-          Write-Host (Get-Module -ListAvailable MicrosoftTeams).path
-      - name: Cache PowerShell modules directories
-        id: powershell-modules-directories
+      - name: Cache ScubaGear
+        id: scubagear-directory
         uses: actions/cache/save@v4
         with:
-          path: |
-            C:\Program Files\WindowsPowerShell\Modules
-            C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          path: C:\Program Files\WindowsPowerShell\Modules
+          key: ${{ runner.os }}-scubagear-${{ hashFiles('**/lockfiles') }}
+      - name: Cache Dependencies
+        id: powershell-directory
+        uses: actions/cache/save@v4
+        with:
+          path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('**/lockfiles') }}
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
@@ -275,6 +275,16 @@ jobs:
       #     }
       #     $Config = New-PesterConfiguration -Hashtable $PesterConfig
       #     Invoke-Pester -Configuration $Config
+      - name: Restore ScubaGear
+        uses: actions/cache/restore@v4
+        with: 
+          path: C:\Program Files\WindowsPowerShell\Modules
+          key: scubagear-directory-${{ hashFiles('**/lockfiles') }}
+      - name: Restore Dependencies
+        uses: actions/cache/restore@v4
+        with:
+          path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
+          key: powershel-directory-${{ hashFiles('**/lockfiles') }}
       - name: Print Scuba Version
         run: |
           Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
