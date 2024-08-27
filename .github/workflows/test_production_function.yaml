@@ -240,7 +240,7 @@ jobs:
           enable-AzPSSession: true
       - name: Restore ScubaGear
         uses: actions/cache/restore@v4
-        with: 
+        with:
           path: C:\Program Files\WindowsPowerShell\Modules
           key: scubagear-directory-
       - name: Restore Dependencies
