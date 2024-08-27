@@ -43,6 +43,9 @@ jobs:
         run: |
           dotnet --version
           dotnet tool install --global AzureSignTool --version 5.0.0
+          Write-Host $Env:UserName
+          cd C:\Users
+          dir
       # OIDC Login to Azure Public Cloud with AzPowershell (enableAzPSSession true)
       - name: Login to Azure
         uses: azure/login@v2
@@ -107,7 +110,7 @@ jobs:
         id: scubagear-directory
         uses: actions/cache/save@v4
         with:
-          path: C:\Program Files\WindowsPowerShell\Modules
+          path: C:\Program Files\WindowsPowerShell\Modules\ScubaGear
           key: "scubagear-directory-${{ github.run_id }}"
       - name: Cache Dependencies
         id: powershell-directory
