@@ -23,7 +23,6 @@ env:
   GalleryName: PrivateScubaGearGallery
 
 jobs:
-  # Build a matrix of aliases for testing.
   publish:
     name: Publish to Private Gallery
     runs-on: windows-latest
@@ -43,9 +42,6 @@ jobs:
         run: |
           dotnet --version
           dotnet tool install --global AzureSignTool --version 5.0.0
-          Write-Host $Env:UserName
-          cd C:\Users
-          dir
       # OIDC Login to Azure Public Cloud with AzPowershell (enableAzPSSession true)
       - name: Login to Azure
         uses: azure/login@v2
@@ -81,7 +77,9 @@ jobs:
               ModuleSourcePath = 'repo/PowerShell/ScubaGear'
               GalleryName = $env:GalleryName
             }
-            # This publishes to a private gallery.
+            # This publishes to a private gallery, from which we will pull in a future step.
+            # This step helps us verify that ScubaGear is in a step where it can be
+            # published to PSGallery.
             Publish-ScubaGearModule @Parameters
       - name: Test Module Publish
         run: |
@@ -106,6 +104,9 @@ jobs:
           Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
           Initialize-ScubaGearForTesting
           Invoke-SCuBA -Version
+      # Instead of initializing ScubaGear repeated for each of the test jobs below,
+      # we cache the PowerShell modules and OPA here and then restore them for the jobs.
+      # It's about a 20% performance improvement.
       - name: Cache ScubaGear
         id: scubagear-directory
         uses: actions/cache/save@v4
@@ -124,6 +125,7 @@ jobs:
         with:
           path: C:\Users\runneradmin\.scubagear\Tools
           key: "opa-directory-${{ github.run_id }}"
+  # Build a matrix of aliases for testing.
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
@@ -236,54 +238,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
-      # - name: Get Key Vault Info
-      #   id: key-vault-info
-      #   env:
-      #     KEY_VAULT_INFO: ${{ secrets.SCUBA_KEY_VAULT_PROD}}
-      #   run: |
-      #     $KeyVaultInfo = ${env:KEY_VAULT_INFO} | ConvertFrom-Json
-      #     echo "KeyVaultUrl=$($KeyVaultInfo.KeyVault.URL)" >> $env:GITHUB_OUTPUT
-      #     echo "KeyVaultCertificateName=$($KeyVaultInfo.KeyVault.CertificateName)" >> $env:GITHUB_OUTPUT
-      # - name: Create Private Gallery
-      #   run: |
-      #     # Source the deploy utilities so the functions in it can be called.
-      #     . repo/utils/workflow/Publish-ScubaGear.ps1
-      #     # . utils/workflow/Publish-ScubaGear.ps1
-      #     cd repo
-      #     New-PrivateGallery -GalleryName $env:GalleryName -Trusted
-      # - name: Sign and Publish Module
-      #   run: |
-      #       # Source the deploy utilities so the functions in it can be called.
-      #       . repo/utils/workflow/Publish-ScubaGear.ps1
-      #       # . utils/workflow/Publish-ScubaGear.ps1
-      #       # Remove non-release files
-      #       Remove-Item -Recurse -Force repo -Include .git*
-      #       # Remove-Item -Recurse -Force $PSScriptRoot -Include .git*
-      #       # Setup the parameters
-      #       $Parameters = @{
-      #         AzureKeyVaultUrl = '${{ steps.key-vault-info.outputs.KeyVaultUrl }}'
-      #         CertificateName = '${{ steps.key-vault-info.outputs.KeyVaultCertificateName }}'
-      #         ModuleSourcePath = 'repo/PowerShell/ScubaGear'
-      #         # ModuleSourcePath = './PowerShell/ScubaGear'
-      #         GalleryName = $env:GalleryName
-      #       }
-      #       # This publishes to a private gallery.
-      #       Publish-ScubaGearModule @Parameters
-      # - name: Test Module Publish
-      #   run: |
-      #     $TestContainers = @()
-      #     $TestContainers += New-PesterContainer -Path "repo/Testing/Functional/BuildTest" -Data @{ }
-      #     # $TestContainers += New-PesterContainer -Path "./Testing/Functional/BuildTest" -Data @{ }
-      #     $PesterConfig = @{
-      #       Run = @{
-      #         Container = $TestContainers
-      #       }
-      #       Output = @{
-      #         Verbosity = 'Detailed'
-      #       }
-      #     }
-      #     $Config = New-PesterConfiguration -Hashtable $PesterConfig
-      #     Invoke-Pester -Configuration $Config
       - name: Restore ScubaGear
         uses: actions/cache/restore@v4
         with: 
@@ -299,13 +253,10 @@ jobs:
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
           key: powershell-directory-
+      # This step verifies that the restore actually works.
       - name: Print Scuba Version
         run: |
-          # Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
-          # Initialize-Scuba
           cd repo
-          # Import-Module -Name ./utils/workflow/Initialize-ScubaGearForTesting
-          # Initialize-ScubaGearForTesting
           Invoke-SCuBA -Version
       - name: Test Product
         id: test-product
