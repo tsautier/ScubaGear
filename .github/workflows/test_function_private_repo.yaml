@@ -108,13 +108,13 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: C:\Program Files\WindowsPowerShell\Modules
-          key: "scubagear-directory-${​{ github.run_id }}"
+          key: "scubagear-directory-${{ github.run_id }}"
       - name: Cache Dependencies
         id: powershell-directory
         uses: actions/cache/save@v4
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
-          key: "powershell-directory-${​{ github.run_id }}"
+          key: "powershell-directory-${{ github.run_id }}"
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
