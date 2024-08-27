@@ -108,13 +108,13 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: C:\Program Files\WindowsPowerShell\Modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: scubagear-directory-${​{ github.run_id }}
       - name: Cache Dependencies
         id: powershell-directory
         uses: actions/cache/save@v4
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
-          key: ${{ runner.os }}-${{ hashFiles('**/lockfiles') }}
+          key: powershell-directory-${​{ github.run_id }}
   build-matrix:
     name: Build Matrix
     runs-on: windows-latest
@@ -279,12 +279,12 @@ jobs:
         uses: actions/cache/restore@v4
         with: 
           path: C:\Program Files\WindowsPowerShell\Modules
-          key: scubagear-directory-${{ hashFiles('**/lockfiles') }}
+          key: scubagear-directory-
       - name: Restore Dependencies
         uses: actions/cache/restore@v4
         with:
           path: C:\Users\runneradmin\Documents\WindowsPowerShell\Modules
-          key: powershell-directory-${{ hashFiles('**/lockfiles') }}
+          key: powershell-directory-
       - name: Print Scuba Version
         run: |
           Install-Module -Name ScubaGear -Repository $env:GalleryName -SkipPublisherCheck
