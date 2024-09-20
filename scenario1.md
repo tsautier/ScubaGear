@@ -5,9 +5,9 @@
 
 | Branch | Tenant | Scenario | Expected Results | Actual Results |
 |----------|----------|----------|----------|----------|
-| main    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | crash 404 error | [ENTER INFO HERE] |
-| main    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | crash 404 error | [ENTER INFO HERE] |
-| main    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | crash 404 error | [ENTER INFO HERE] |
+| main    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
+| main    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
+| main    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
 | fix    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | no crash | [ENTER INFO HERE] |
 | fix    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | no crash | [ENTER INFO HERE] |
 | fix    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | no crash | [ENTER INFO HERE] |
