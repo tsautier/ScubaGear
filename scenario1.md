@@ -8,11 +8,13 @@
 | main    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
 | main    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
 | main    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | crash 404 error | 404 (NotFound), Errocode: Request_ResourceNotFound |
-| fix    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | no crash | [ENTER INFO HERE] |
-| fix    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | no crash | [ENTER INFO HERE] |
-| fix    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | no crash | [ENTER INFO HERE] |
+| fix    | G5 | Scenario 1 - Nested group assignment in PIM for Groups (Active assigned to role) | no crash | no crash, reports generated |
+| fix    | G5 | Scenario 2 - Nested group assignment in PIM for Groups (Eligible assigned to role) | no crash | no crash, reports generated |
+| fix    | G5 | Scenario 3 - Nested group assignment in PIM for Groups (PIM group circular reference) | no crash | no crash, reports generated |
 
 
 Test users/groups created: 
 - Mitchel's PIM Group 1 (active assigned to Sharepoint Admin)
 - Mitchel's PIM Group 2 (eligible assignment to Mitchel's PIM Group 1)
+- Mitchel's PIM Group 3 (Eligible assigned)
+- Mitchel's PIM Group 4 (add into group 3)
