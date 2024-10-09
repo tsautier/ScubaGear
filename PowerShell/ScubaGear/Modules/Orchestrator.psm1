@@ -445,6 +445,10 @@ function Invoke-SCuBA {
                 'OutActionPlanFileName' = $ScubaConfig.OutActionPlanFileName;
             }
             ConvertTo-ResultsCsv @CsvParams
+            $CSVFileName = Join-Path -Path $OutFolderPath "ScubaResults.csv"
+            $OutputPath = Join-Path -Path $OutFolderPath "$($OutRegoFileName)-cspa.csv"
+            Import-Module -Name $PSScriptRoot/BWC-Ouput-Formatter.psm1 -Function Out-CSPA
+            Out-CSPA -CSVFileName $CSVFileName -OutputPath $OutputPath
         }
         finally {
             if ($ScubaConfig.DisconnectOnExit) {

@@ -1,189 +1,226 @@
 package powerplatform
-import rego.v1
-import data.utils.report.NotCheckedDetails
-import data.utils.report.ReportDetailsString
-import data.utils.report.ReportDetailsBoolean
-import data.utils.report.ReportDetailsArray
-import data.utils.key.FilterArray
+import future.keywords
 
 
-######################
-# MS.POWERPLATFORM.1 #
-######################
+Format(Array) = format_int(count(Array), 10)
+
+Description(String1, String2, String3) = trim(concat(" ", [String1, concat(" ", [String2, String3])]), " ")
+
+ReportDetailsBoolean(Status) = "Requirement met" if {Status == true}
+
+ReportDetailsBoolean(Status) = "Requirement not met" if {Status == false}
+
+ReportDetailsArray(Status, Array, String1) =  Detail if {
+    Status == true
+    Detail := "Requirement met"
+}
+
+ReportDetailsArray(Status, Array, String1) = Detail if {
+	Status == false
+    String2 := concat(", ", Array)
+    Detail := Description(Format(Array), String1, String2)
+}
+ReportDetailsString(Status, String) =  Detail if {
+    Status == true
+    Detail := "Requirement met"
+}
+
+ReportDetailsString(Status, String) = Detail if {
+	Status == false
+    Detail := String
+}
+
+
+################
+# Baseline 2.1 #
+################
 
 #
-# MS.POWERPLATFORM.1.1v1
+# Baseline 2.1: Policy 1
 #--
-
-# Pass if disableEnvironmentCreationByNonAdminUsers is true
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.1.1v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-TenantSettings"],
-    "ActualValue": EnvironmentCreation.disableEnvironmentCreationByNonAdminUsers,
-    "ReportDetails": ReportDetailsBoolean(Status),
-    "RequirementMet": Status
-} if {
-    some EnvironmentCreation in input.environment_creation
+tests[{
+    "Requirement" : "The ability to create production and sandbox environments SHALL be restricted to admins",
+    "Control" : "Power Platform 2.1",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-TenantSettings"],
+    "ActualValue" : EnvironmentCreation.disableEnvironmentCreationByNonAdminUsers,
+    "ReportDetails" : ReportDetailsBoolean(Status),
+    "RequirementMet" : Status
+}] {
+    EnvironmentCreation := input.environment_creation[_]
     Status := EnvironmentCreation.disableEnvironmentCreationByNonAdminUsers == true
 }
+#--
 
-# Edge case where pulling configuration from tenant fails
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.1.1v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-TenantSettings"],
-    "ActualValue": "PowerShell Error",
-    "ReportDetails": "PowerShell Error",
-    "RequirementMet": false
-} if {
+# Baseline 2.1: Policy 1 PoSh Error
+#--
+tests[{
+    "Requirement" : "The ability to create production and sandbox environments SHALL be restricted to admins",
+    "Control" : "Power Platform 2.1",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-TenantSettings"],
+    "ActualValue" : "PowerShell Error",
+    "ReportDetails" : "PowerShell Error",
+    "RequirementMet" : false
+}] {
     count(input.environment_creation) <= 0
 }
 #--
 
 #
-# MS.POWERPLATFORM.1.2v1
+# Baseline 2.1: Policy 2 
 #--
-# Pass if disableTrialEnvironmentCreationByNonAdminUsers is true
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.1.2v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-TenantSettings"],
-    "ActualValue": EnvironmentCreation.disableTrialEnvironmentCreationByNonAdminUsers,
-    "ReportDetails": ReportDetailsBoolean(Status),
-    "RequirementMet": Status
-} if {
-    some EnvironmentCreation in input.environment_creation
+tests[{
+    "Requirement" : "The ability to create trial environments SHALL be restricted to admins",
+    "Control" : "Power Platform 2.1",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-TenantSettings"],
+    "ActualValue" : EnvironmentCreation.disableTrialEnvironmentCreationByNonAdminUsers,
+    "ReportDetails" : ReportDetailsBoolean(Status),
+    "RequirementMet" : Status
+}] {
+    EnvironmentCreation := input.environment_creation[_]
     Status := EnvironmentCreation.disableTrialEnvironmentCreationByNonAdminUsers == true
 }
+#--
 
-# Edge case where pulling configuration from tenant fails
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.1.2v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-TenantSettings"],
-    "ActualValue": "PowerShell Error",
-    "ReportDetails": "PowerShell Error",
-    "RequirementMet": false
-} if {
+#
+# Baseline 2.1: Policy 2 PoSh Error
+#--
+tests[{
+    "Requirement" : "The ability to create trial environments SHALL be restricted to admins",
+    "Control" : "Power Platform 2.1",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-TenantSettings"],
+    "ActualValue" : "PowerShell Error",
+    "ReportDetails" : "PowerShell Error",
+    "RequirementMet" : false
+}] {
     count(input.environment_creation) <= 0
 }
 #--
 
 
-######################
-# MS.POWERPLATFORM.2 #
-######################
+################
+# Baseline 2.2 #
+################
 
 #
-# MS.POWERPLATFORM.2.1v1
+# Baseline 2.2: Policy 1
 #--
-
-# Iterate through all policies. For each, check if the environment the policy applies to
-# is the default environment. If so, save the policy name to the DefaultEnvPolicies list.
-DefaultEnvPolicies contains {"PolicyName": Policies.displayName} if {
-    # regal ignore:prefer-some-in-iteration
-    some Policies in input.dlp_policies[_].value
-    some Env in Policies.environments
-    Env.name == concat("-", ["Default", input.tenant_id])
+DefaultEnvPolicies[{"PolicyName" : Policy.displayName}]{
+    TenantId := input.tenant_id
+    DlpPolicies := input.dlp_policies[_]
+    Policy := DlpPolicies.value[_]
+    Env := Policy.environments[_]
+    Env.name == concat("-", ["Default", TenantId])
 }
 
 # Note: there is only one default environment per tenant and it cannot be deleted or backed up
-# Pass if at least one policy applies to the default environment
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.1v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": DefaultEnvPolicies,
-    "ReportDetails": ReportDetailsString(Status, ErrorMessage),
-    "RequirementMet": Status
-} if {
+tests[{
+    "Requirement" : "A DLP policy SHALL be created to restrict connector access in the default Power Platform environment",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : DefaultEnvPolicies,
+    "ReportDetails" : ReportDetailsString(Status, ErrorMessage),
+    "RequirementMet" : Status
+}] {
     ErrorMessage := "No policy found that applies to default environment"
     Status := count(DefaultEnvPolicies) > 0
 }
 #--
 
 #
-# MS.POWERPLATFORM.2.2v1
+# Baseline 2.2: Policy 2
 #--
-
 # gets the list of all tenant environments
-AllEnvironments contains EnvironmentList.EnvironmentName if {
-    some EnvironmentList in input.environment_list
+AllEnvironments [{ "EnvName" : EnvName }] {
+    EnvironmentList := input.environment_list[_]
+    EnvName := EnvironmentList.EnvironmentName
 }
 
 # gets the list of all environments with policies applied to them
-EnvWithPolicies contains Env.name if {
-    # regal ignore:prefer-some-in-iteration
-    some Policies in input.dlp_policies[_].value
-    some Env in Policies.environments
+EnvWithPolicies [{"EnvName" : PolicyEnvName }] {
+    DlpPolicies := input.dlp_policies[_]
+    Policy := DlpPolicies.value[_]
+    Env := Policy.environments[_]
+    PolicyEnvName := Env.name
 }
 
-# Pass if all envoirments have a policy applied to them
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.2v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": EnvWithoutPolicies,
-    "ReportDetails": ReportDetailsArray(Status, EnvWithoutPolicies, ErrorMessage),
-    "RequirementMet": Status
-} if {
-    some DLPPolicies in input.dlp_policies
+# finds the environments with no policies applied to them
+EnvWithoutPolicies [Env] {
+    AllEnvSet := {Env.EnvName | Env = AllEnvironments[_]}
+    PolicyEnvSet := {Env.EnvName | Env = EnvWithPolicies[_]}
+    Difference := AllEnvSet - PolicyEnvSet
+    Env := Difference[_]
+}
+
+tests[{
+    "Requirement" : "Non-default environments SHOULD have at least one DLP policy that affects them",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : EnvWithoutPolicies,
+    "ReportDetails" : ReportDetailsArray(Status, EnvWithoutPolicies, ErrorMessage),
+    "RequirementMet" : Status
+}] {
+    DLPPolicies = input.dlp_policies[_]
     count(DLPPolicies.value) > 0
     ErrorMessage := "Subsequent environments without DLP policies:"
-
-    # finds the environments with no policies applied to them
-    EnvWithoutPolicies := AllEnvironments - EnvWithPolicies
     Status := count(EnvWithoutPolicies) == 0
 }
+#--
 
-# Edge case where no policies are found
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.2v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": "No DLP Policies found",
-    "ReportDetails": "No DLP Policies found",
-    "RequirementMet": false
-} if {
-    some DLPPolicies in input.dlp_policies
+#
+# Baseline 2.2: Policy 2 No DLP Policies found
+#--
+tests[{
+    "Requirement" : "Non-default environments SHOULD have at least one DLP policy that affects them",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : "No DLP Policies found",
+    "ReportDetails" : "No DLP Policies found",
+    "RequirementMet" : false
+}] {
+    DLPPolicies = input.dlp_policies[_]
     count(DLPPolicies.value) <= 0
 }
+#--
 
-# Edge case where pulling configuration from tenant fails
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.2v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": "PowerShell Error",
-    "ReportDetails": "PowerShell Error",
-    "RequirementMet": false
-} if {
+#
+# Baseline 2.2: Policy 2 PoSh Error
+#--
+tests[{
+    "Requirement" : "Non-default environments SHOULD have at least one DLP policy that affects them",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : "PowerShell Error",
+    "ReportDetails" : "PowerShell Error",
+    "RequirementMet" : false
+}] {
     count(input.dlp_policies) <= 0
 }
 #--
 
 #
-# MS.POWERPLATFORM.2.3v1
+# Baseline 2.2: Policy 3
 #--
-
 # gets the set of connectors that are allowed in the default environment
 # general and confidential groups refer to business and non-business
-ConnectorSet contains Connector.id if {
-    # regal ignore:prefer-some-in-iteration
-    some Policies in input.dlp_policies[_].value
-    some Group in Policies.connectorGroups
-    Conditions := [
-        Group.classification == "General",
-        Group.classification == "Confidential"
-    ]
-    count(FilterArray(Conditions, true)) > 0
-    some Connector in Group.connectors
-
-    # Filter: only include policies that meet all the requirements
-    some Env in Policies.environments
+ConnectorSet[Connector.id] {
     TenantId := input.tenant_id
+    DlpPolicies := input.dlp_policies[_]
+    Policy := DlpPolicies.value[_]
+    Env := Policy.environments[_]
+    Group := Policy.connectorGroups[_]
+    Connector := Group.connectors[_]
+    Conditions := [Group.classification == "General", Group.classification == "Confidential"]
+    # Filter: only include policies that meet all the requirements
     Env.name == concat("-", ["Default", TenantId])
+    count([Condition | Condition = Conditions[_]; Condition == true]) > 0
 }
 
 # set of all connectors that cannot be blocked
@@ -215,138 +252,129 @@ AllowedInBaseline := {
     "/providers/Microsoft.PowerApps/apis/shared_yammer"
 }
 
-# Pass if all connectors besides the ones allowed are blocked
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.3v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": RogueConnectors,
-    "ReportDetails": ReportDetailsArray(Status, RogueConnectors, ErrorMessage),
-    "RequirementMet": Status
-} if {
-    some DLPPolicies in input.dlp_policies
+tests[{
+    "Requirement" : "All connectors except those listed...[see Power Platform secure configuration baseline for list]...SHOULD be added to the Blocked category in the default environment policy",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : RogueConnectors,
+    "ReportDetails" : ReportDetailsArray(Status, RogueConnectors, ErrorMessage),
+    "RequirementMet" : Status
+}] {
+    DLPPolicies = input.dlp_policies[_]
     count(DLPPolicies.value) > 0
     ErrorMessage := "Connectors are allowed that should be blocked:"
-    RogueConnectors := ConnectorSet - AllowedInBaseline
+    RogueConnectors := (ConnectorSet - AllowedInBaseline)
     Status := count(RogueConnectors) == 0
 }
+#--
 
-# Edge case where no policies are found
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.3v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": "No DLP Policies found",
-    "ReportDetails": "No DLP Policies found",
-    "RequirementMet": false
-} if {
-    some DLPPolicies in input.dlp_policies
+#
+# Baseline 2.2: Policy 3 Error No DLP policies Found
+#--
+tests[{
+    "Requirement" : "All connectors except those listed...[see Power Platform secure configuration baseline for list]...SHOULD be added to the Blocked category in the default environment policy",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : "No DLP Policies found",
+    "ReportDetails" : "No DLP Policies found",
+    "RequirementMet" : false
+}] {
+    DLPPolicies = input.dlp_policies[_]
     count(DLPPolicies.value) <= 0
 }
+#--
 
-# Edge case where pulling configuration from tenant fails
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.2.3v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-DlpPolicy"],
-    "ActualValue": "PowerShell Error",
-    "ReportDetails": "PowerShell Error",
-    "RequirementMet": false
-} if {
+#
+# Baseline 2.2: Policy 3 PoSh Error
+#--
+tests[{
+    "Requirement" : "All connectors except those listed...[see Power Platform secure configuration baseline for list]...SHOULD be added to the Blocked category in the default environment policy",
+    "Control" : "Power Platform 2.2",
+    "Criticality" : "Should",
+    "Commandlet" : ["Get-DlpPolicy"],
+    "ActualValue" : "PowerShell error",
+    "ReportDetails" : "PowerShell error",
+    "RequirementMet" : false
+}] {
     count(input.dlp_policies) <= 0
 }
 #--
 
 
-######################
-# MS.POWERPLATFORM.3 #
-######################
-
+################
+# Baseline 2.3 #
+################
 
 #
-# MS.POWERPLATFORM.3.1v1
+# Baseline 2.3: Policy 1
 #--
-
-# Pass if isDisabled is false
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.3.1v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-PowerAppTenantIsolationPolicy"],
-    "ActualValue": TenantIsolation.properties.isDisabled,
-    "ReportDetails": ReportDetailsBoolean(Status),
-    "RequirementMet": Status
-} if {
-    some TenantIsolation in input.tenant_isolation
+tests[{
+    "Requirement" : "Power Platform tenant isolation SHALL be enabled",
+    "Control" : "Power Platform 2.3",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-PowerAppTenantIsolationPolicy"],
+    "ActualValue" : TenantIsolation.properties.isDisabled,
+    "ReportDetails" : ReportDetailsBoolean(Status),
+    "RequirementMet" : Status
+}] {
+    TenantIsolation := input.tenant_isolation[_]
     Status := TenantIsolation.properties.isDisabled == false
 }
+#--
 
-# Edge case where pulling configuration from tenant fails
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.3.1v1",
-    "Criticality": "Shall",
-    "Commandlet": ["Get-PowerAppTenantIsolationPolicy"],
-    "ActualValue": "PowerShell Error",
-    "ReportDetails": "PowerShell Error",
-    "RequirementMet": false
-} if {
+#
+# Baseline 2.3: Policy 1 PoSh Error
+#--
+tests[{
+    "Requirement" : "Power Platform tenant isolation SHALL be enabled",
+    "Control" : "Power Platform 2.3",
+    "Criticality" : "Shall",
+    "Commandlet" : ["Get-PowerAppTenantIsolationPolicy"],
+    "ActualValue" : "PowerShell Error",
+    "ReportDetails" : "PowerShell Error",
+    "RequirementMet" : false
+}] {
     count(input.tenant_isolation) <= 0
 }
 #--
 
 #
-# MS.POWERPLATFORM.3.2v1
+# Baseline 2.3: Policy 2
 #--
-
 # At this time we are unable to test for X because of Y
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.3.2v1",
-    "Criticality": "Should/Not-Implemented",
-    "Commandlet": [],
-    "ActualValue": [],
-    "ReportDetails": NotCheckedDetails("MS.POWERPLATFORM.3.2v1"),
-    "RequirementMet": false
+tests[{
+    "Requirement" : "An inbound/outbound connection allowlist SHOULD be configured",
+    "Control" : "Power Platform 2.3",
+    "Criticality" : "Should/Not-Implemented",
+    "Commandlet" : [],
+    "ActualValue" : [],
+    "ReportDetails" : "Currently cannot be checked automatically. See Power Platform Secure Configuration Baseline policy 2.3 for instructions on manual check",
+    "RequirementMet" : false
+}] {
+    true
 }
 #--
 
 
-######################
-# MS.POWERPLATFORM.4 #
-######################
+################
+# Baseline 2.4 #
+################
 
 #
-# MS.POWERPLATFORM.4.1v1
+# Baseline 2.4: Policy 1
 #--
-
 # At this time we are unable to test for X because of Y
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.4.1v1",
-    "Criticality": "Shall/Not-Implemented",
-    "Commandlet": [],
-    "ActualValue": [],
-    "ReportDetails": NotCheckedDetails("MS.POWERPLATFORM.4.1v1"),
-    "RequirementMet": false
-}
-#--
-
-
-######################
-# MS.POWERPLATFORM.5 #
-######################
-
-#
-# MS.POWERPLATFORM.5.1v1
-#--
-
-# Pass if disablePortalsCreationByNonAdminUsers is true
-tests contains {
-    "PolicyId": "MS.POWERPLATFORM.5.1v1",
-    "Criticality": "Should",
-    "Commandlet": ["Get-TenantSettings"],
-    "ActualValue": EnvironmentCreation.disablePortalsCreationByNonAdminUsers,
-    "ReportDetails": ReportDetailsBoolean(Status),
-    "RequirementMet": Status
-} if {
-    some EnvironmentCreation in input.environment_creation
-    Status := EnvironmentCreation.disablePortalsCreationByNonAdminUsers == true
+tests[{
+    "Requirement" : "Content security policies for model-driven Power Apps SHALL be enabled",
+    "Control" : "Power Platform 2.4",
+    "Criticality" : "Shall/Not-Implemented",
+    "Commandlet" : [],
+    "ActualValue" : [],
+    "ReportDetails" : "Currently cannot be checked automatically. See Power Platform Secure Configuration Baseline policy 2.4 for instructions on manual check",
+    "RequirementMet" : false
+}] {
+    true
 }
 #--
